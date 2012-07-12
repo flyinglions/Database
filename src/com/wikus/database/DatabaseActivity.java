@@ -1,17 +1,17 @@
 package com.wikus.database;
 
-import android.os.Bundle;
-import android.app.Activity;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.support.v4.app.NavUtils;
+import org.apache.cordova.DroidGap;
 
-public class DatabaseActivity extends Activity {
+import android.os.Bundle;
+import android.view.Menu;
+
+public class DatabaseActivity extends DroidGap {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_database);
+        super.loadUrl("file:///android_asset/www/index.html");
+        //setContentView(R.layout.activity_database);
     }
 
     @Override

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Storage Example</title>
+    <title>Database</title>
 
     <script type="text/javascript" charset="utf-8" src="cordova-1.9.0.js"></script>
-    <script type="text/javascript" charset="utf-8">
+    <script type="text/javascript">
 
     // Wait for Cordova to load
     //
@@ -12,48 +12,65 @@
 
     // Populate the database 
     //
-    function populateDB(tx) {
+    /*function populateDB(tx) {
         tx.executeSql('DROP TABLE IF EXISTS DEMO');
         tx.executeSql('CREATE TABLE IF NOT EXISTS DEMO (id unique, data)');
         tx.executeSql('INSERT INTO DEMO (id, data) VALUES (1, "First row")');
         tx.executeSql('INSERT INTO DEMO (id, data) VALUES (2, "Second row")');
-    }
+    }*/
 
     // Query the database
     //
-    function queryDB(tx) {
-        tx.executeSql('SELECT * FROM DEMO', [], querySuccess, errorCB);
+    function queryDB(tx) 
+    {
+        //tx.executeSql('DROP TABLE IF EXISTS Test');
+        //tx.executeSql('CREATE TABLE IF NOT EXISTS Test (id unique, name, team)');
+        /*tx.executeSql('INSERT INTO Test (id, name, team) VALUES (1, "Wikus", "Flying lions")');
+        tx.executeSql('INSERT INTO Test (id, name, team) VALUES (2, "Luthfiya", "Flying lions")');
+        tx.executeSql('INSERT INTO Test (id, name, team) VALUES (3, "Tinus", "Flying lions")');
+        tx.executeSql('INSERT INTO Test (id, name, team) VALUES (4, "Petrus", "Flying lions")');
+        tx.executeSql('INSERT INTO Test (id, name, team) VALUES (5, "Pieter", "Flying lions")');*/
+        var sql = "";
+        //tx.executeSql('DROP TABLE IF EXISTS bank_account');
+        //tx.executeSql('CREATE TABLE IF NOT EXISTS `bank_account` (`Account_Number` varchar(255) NOT NULL,`Bank` varchar(255) NOT NULL,`Account_Name` varchar(255) DEFAULT NULL,`Balance_Available` float NOT NULL,`User_ID` int(11) NOT NULL,PRIMARY KEY (`Account_Number`),KEY `User_ID` (`User_ID`)) ENGINE=InnoDB DEFAULT CHARSET=latin1;');
+        tx.executeSql('DROP TABLE IF EXISTS bank_account');
+        tx.executeSql('CREATE TABLE IF NOT EXISTS bank_account (Account_Number unique, Bank, Account_Name, Balance_Available, User_ID)');
+        //tx.executeSql('SELECT * FROM Test', [], querySuccess, error);
     }
 
     // Query the success callback
     //
     function querySuccess(tx, results) {
+        //tx.executeSql('DROP TABLE IF EXISTS DEMO');
+        
         var len = results.rows.length;
-        console.log("DEMO table: " + len + " rows found.");
+        console.log("Test table: " + len + " rows found.");
+        alert("Test table: " + len + " rows found.");
         for (var i=0; i<len; i++){
-            alert("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
-            console.log("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
+            alert("Row = " + i + " ID = " + results.rows.item(i).id + " name =  " + results.rows.item(i).name  + " team =  " + results.rows.item(i).team);
+            console.log("Row = " + i + " ID = " + results.rows.item(i).id + " name =  " + results.rows.item(i).name  + " team =  " + results.rows.item(i).team);
         }
     }
 
     // Transaction error callback
     //
-    function errorCB(err) {
+    function error(err) 
+    {
         console.log("Error processing SQL: "+err.code);
     }
 
     // Transaction success callback
     //
-    function successCB() {
-        var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
-        db.transaction(queryDB, errorCB);
+    function success() 
+    {
+        console.log("success on database transaction.");
     }
 
     // Cordova is ready
     //
     function onDeviceReady() {
-        var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
-        db.transaction(populateDB, errorCB, successCB);
+        var db = window.openDatabase("Database", "1.0", "Flying Lions Database", 10485760);
+        db.transaction(queryDB, error, success);
     }
 
     </script>
