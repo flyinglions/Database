@@ -4,6 +4,7 @@
     <title>Database</title>
 
     <script type="text/javascript" charset="utf-8" src="cordova-1.9.0.js"></script>
+    <script type="text/javascript" src="jquery-1.7.2.min.js"></script>
     <script type="text/javascript">
 
     // Wait for Cordova to load
@@ -23,6 +24,11 @@
     //
     function queryDB(tx) 
     {
+        var list = [
+            { "Expense_ID":"1" , "Category":"Clothing" , "Account_Number":"100256984" , "SMS_ID":"1" },
+            { "Expense_ID":"2" , "Category":"Food" , "Account_Number":"785362569" , "SMS_ID":"2" },
+            { "Expense_ID":"3" , "Category":"Travel" , "Account_Number":"256325148" , "SMS_ID":"3" }
+        ];
         //tx.executeSql('DROP TABLE IF EXISTS Test');
         //tx.executeSql('CREATE TABLE IF NOT EXISTS Test (id unique, name, team)');
         /*tx.executeSql('INSERT INTO Test (id, name, team) VALUES (1, "Wikus", "Flying lions")');
@@ -30,12 +36,42 @@
         tx.executeSql('INSERT INTO Test (id, name, team) VALUES (3, "Tinus", "Flying lions")');
         tx.executeSql('INSERT INTO Test (id, name, team) VALUES (4, "Petrus", "Flying lions")');
         tx.executeSql('INSERT INTO Test (id, name, team) VALUES (5, "Pieter", "Flying lions")');*/
-        var sql = "";
+
         //tx.executeSql('DROP TABLE IF EXISTS bank_account');
         //tx.executeSql('CREATE TABLE IF NOT EXISTS `bank_account` (`Account_Number` varchar(255) NOT NULL,`Bank` varchar(255) NOT NULL,`Account_Name` varchar(255) DEFAULT NULL,`Balance_Available` float NOT NULL,`User_ID` int(11) NOT NULL,PRIMARY KEY (`Account_Number`),KEY `User_ID` (`User_ID`)) ENGINE=InnoDB DEFAULT CHARSET=latin1;');
-        tx.executeSql('DROP TABLE IF EXISTS bank_account');
-        tx.executeSql('CREATE TABLE IF NOT EXISTS bank_account (Account_Number unique, Bank, Account_Name, Balance_Available, User_ID)');
+        //tx.executeSql('DROP TABLE IF EXISTS bank_account');
+        //tx.executeSql('CREATE TABLE IF NOT EXISTS bank_account (Account_Number unique, Bank, Account_Name, Balance_Available, User_ID)');
+        tx.executeSql('DROP TABLE IF EXISTS expenses');
+        tx.executeSql('CREATE TABLE IF NOT EXISTS expenses (Expense_ID unique, Category, Account_Number, SMS_ID)');
         //tx.executeSql('SELECT * FROM Test', [], querySuccess, error);
+        /*
+         * 
+         * CREATE TABLE IF NOT EXISTS `expenses` (
+            `Expense_ID` int(11) NOT NULL,
+            `Category` varchar(255) NOT NULL,
+            `Account_Number` varchar(255) NOT NULL,
+            `SMS_ID` int(11) NOT NULL,
+            PRIMARY KEY (`Expense_ID`),
+            KEY `Account_Number` (`Account_Number`),
+            KEY `SMS_ID` (`SMS_ID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+         * 
+         */
+        var listSize = list.length;
+        
+        for (var i=0; i<listSize; i++)
+        {
+            tx.executeSql('INSERT INTO expenses (Expense_ID, Category, Account_Number, SMS_ID) VALUES ('+list[i].Expense_ID+', "'+list[i].Category+'", "'+list[i].Account_Number+'", '+list[i].SMS_ID+')');       
+        }
+        //tx.executeSql('INSERT INTO expenses (Expense_ID, Category, Account_Number, SMS_ID) VALUES (1, "Clothing", "100256984", 1)');       
+        //tx.executeSql('INSERT INTO expenses (Expense_ID, Category, Account_Number, SMS_ID) VALUES (2, "Food", "785362569", 2)');
+        //tx.executeSql('INSERT INTO expenses (Expense_ID, Category, Account_Number, SMS_ID) VALUES (3, "Travel", "256325148", 3)');
+        /*
+         *  Insert into expenses(Category, Account_Number, SMS_ID) values('Clothing','100256984', 1);
+            Insert into expenses(Category, Account_Number, SMS_ID) values('Food','785362569', 2);
+            Insert into expenses(Category, Account_Number, SMS_ID) values('Travel','256325148', 3);
+         */
+        tx.executeSql('SELECT * FROM expenses', [], querySuccess, error);
     }
 
     // Query the success callback
@@ -44,12 +80,16 @@
         //tx.executeSql('DROP TABLE IF EXISTS DEMO');
         
         var len = results.rows.length;
-        console.log("Test table: " + len + " rows found.");
-        alert("Test table: " + len + " rows found.");
+        console.log("expenses table: " + len + " rows found.");
+        //alert("expenses table: " + len + " rows found.");
         for (var i=0; i<len; i++){
-            alert("Row = " + i + " ID = " + results.rows.item(i).id + " name =  " + results.rows.item(i).name  + " team =  " + results.rows.item(i).team);
-            console.log("Row = " + i + " ID = " + results.rows.item(i).id + " name =  " + results.rows.item(i).name  + " team =  " + results.rows.item(i).team);
+            //alert("Row = " + i + " Expense_ID = " + results.rows.item(i).Expense_ID + " Category =  " + results.rows.item(i).Category  + " Account_Number =  " + results.rows.item(i).Account_Number + " SMS_ID =  " + results.rows.item(i).SMS_ID);
+            $(document).ready(function () {                
+                $('<hr><p>Expense_ID = <b>' + results.rows.item(i).Expense_ID +'</b></p><p>Category =  <b>' + results.rows.item(i).Category  + '</b></p><p>Account_Number =  <b>' + results.rows.item(i).Account_Number + '</b></p><p>SMS_ID =  <b>' + results.rows.item(i).SMS_ID + '</b></p><hr>').appendTo('div#data');
+            });
+            console.log("Row = " + i + " Expense_ID = " + results.rows.item(i).Expense_ID + " Category =  " + results.rows.item(i).Category  + " Account_Number =  " + results.rows.item(i).Account_Number + " SMS_ID =  " + results.rows.item(i).SMS_ID);
         }
+        //alert("Completed!");
     }
 
     // Transaction error callback
@@ -76,8 +116,8 @@
     </script>
   </head>
   <body>
-    <h1>Example</h1>
-    <p>Database</p>
-    <p id="data"></p>
+    <h1>Database</h1>
+    <p>Loading Data out of list...</p>
+    <div id="data"></div>
   </body>
 </html>
